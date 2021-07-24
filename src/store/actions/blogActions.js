@@ -56,6 +56,32 @@ export const getBlogDetails = (id) => async (
     }
 }
 
+export const createBlog = () => async (
+    dispatch, getState
+) => {
+    try {
+        dispatch({ type: CREATE_BLOG_REQUEST })
+
+        const { userLogin: userInfo } = getState()
+
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        const { data } = await axios.post("/api/blog", {}, config)
+
+        dispatch({ type: CREATE_BLOG_SUCCESS, payload: data,})
+    } catch (error) {
+        dispatch ({
+            type: CREATE_BLOG_FAIL,
+            payload:
+            error.response && error.response.data.message ? error.response.data.message : error.message
+        })
+    }
+}
+
 
 
 export const updateBlog = (blog) => async (
@@ -64,21 +90,46 @@ export const updateBlog = (blog) => async (
     try {
         dispatch({ type: UPDATE_BLOG_REQUEST })
 
-        const {
-            userLogin: { userInfo }} = getState(),
+        const {userLogin: { userInfo }} = getState()
         
         const config = { 
             headers: {
                 "Content-Type" : "application/json",
                 Authorization: `Bearer ${userInfo.token}`
             },
-        },
+        }
 
         const { data } = await axios.put(`/api/blog/${blog._id}`, blog, config)
         dispatch({ type: UPDATE_BLOG_SUCCESS, payload: data })
     } catch (error) {
         dispatch ({
             type: UPDATE_BLOG_FAIL,
+            payload:
+            error.response && error.response.data.message ? error.response.data.message : error.message
+        })
+    }
+}
+
+export const deleteBlog = (id) => async (
+    dispatch, getState
+) => {
+    try {
+        dispatch({ type: DELETE_BLOG_REQUEST })
+
+        const {userLogin: { userInfo }} = getState()
+        
+        const config = { 
+            headers: {
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${userInfo.token}`
+            },
+        }
+
+        const { data } = await axios.delete(`/api/blog/${id}`, config)
+        dispatch({ type: DELETE_BLOG_SUCCESS, payload: data })
+    } catch (error) {
+        dispatch ({
+            type: DELETE_BLOG_FAIL,
             payload:
             error.response && error.response.data.message ? error.response.data.message : error.message
         })
