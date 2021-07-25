@@ -76,8 +76,8 @@ const LoginScreen = (props) => {
                         changed = {(event) => inputChangeHandler(event, formElement.id)}
                     />
                 ))}
-            </form>
             <button type='Submit'>Submit</button>
+            </form>
         </div>
     )
 }
